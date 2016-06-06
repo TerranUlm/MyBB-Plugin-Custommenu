@@ -3,28 +3,18 @@
 Custom Menu Plugin for MyBB
 Copyright (C) 2013 Dieter Gobbers
 
-The MIT License (MIT)
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Copyright (c) 2016 Dieter Gobbers
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 /* Exported by Hooks plugin Wed, 28 Aug 2013 10:37:27 GMT */
@@ -52,9 +42,9 @@ function custommenu_info()
 		'website' => 'http://opt-community.de/',
 		'author' => 'Dieter Gobbers',
 		'authorsite' => 'http://opt-community.de/',
-		'version' => '2.0',
+		'version' => '2.1',
 		'guid' => '',
-		'compatibility' => '16*'
+		'compatibility' => '18*'
 	);
 }
 
@@ -86,14 +76,17 @@ function custommenu_activate()
 
 	require_once MYBB_ROOT . "/inc/adminfunctions_templates.php";
 	
-	$regex = '#' . '(\<div class="menu"\>.*<ul>.*$.*<).+($.^\s*<\/ul>.+\<\/div\>)' . '#smUi';
-	find_replace_templatesets("header", $regex, '${1}custom_menu>${2}');
+	$regex = '#' . '(\<ul class="menu top_links"\>.*$.*)\{.+($.^\s*<\/ul>)' . '#smUi';
+	find_replace_templatesets("header", $regex, '${1}<custom_menu>${2}');
 	
 	change_admin_permission('tools','custommenu');
 }
 
 function custommenu_deactivate()
 {
+	global $PL;
+	$PL or require_once PLUGINLIBRARY;
+	
 	if ( !file_exists( PLUGINLIBRARY ) )
 	{
 		flash_message( "PluginLibrary is missing.", "error" );
@@ -111,10 +104,11 @@ function custommenu_deactivate()
 
 	require_once MYBB_ROOT . "/inc/adminfunctions_templates.php";
 	
-	find_replace_templatesets("header", "#" . preg_quote('<custom_menu>') . "#i", '<li><a href="{$mybb->settings[\'bburl\']}/search.php"><img src="{$theme[\'imgdir\']}/toplinks/search.gif" alt="" title="" />{$lang->toplinks_search}</a></li>
-					<li><a href="{$mybb->settings[\'bburl\']}/memberlist.php"><img src="{$theme[\'imgdir\']}/toplinks/memberlist.gif" alt="" title="" />{$lang->toplinks_memberlist}</a></li>
-					<li><a href="{$mybb->settings[\'bburl\']}/calendar.php"><img src="{$theme[\'imgdir\']}/toplinks/calendar.gif" alt="" title="" />{$lang->toplinks_calendar}</a></li>
-					<li><a href="{$mybb->settings[\'bburl\']}/misc.php?action=help"><img src="{$theme[\'imgdir\']}/toplinks/help.gif" alt="" title="" />{$lang->toplinks_help}</a></li>', 0);
+	find_replace_templatesets("header", "#" . preg_quote('<custom_menu>') . "#i", '{$menu_portal}
+						{$menu_search}
+						{$menu_memberlist}
+						{$menu_calendar}
+						<li><a href="{$mybb->settings[\'bburl\']}/misc.php?action=help" class="help">{$lang->toplinks_help}</a></li>', 0);
 	change_admin_permission('tools','custommenu', -1);
 }
 
@@ -184,28 +178,33 @@ function custommenu_install()
 		}
 	
 	// Default Menu
+	// Portal
+	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
+				(id,id_name,title,link,icon,id_order)
+			  VALUES('1','Portal','Portal','\$mybburl/portal.php','',1)");
+	
 	// Search
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('1','Search','Search','\$mybburl/search.php','\$mybburl/images/toplinks/search.gif',1)");
+			  VALUES('2','Search','Search','\$mybburl/search.php','\$mybburl/images/toplinks/search.gif',2)");
 	
 	// Memberlist
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('2','Memberlist','Memberlist','\$mybburl/memberlist.php','\$mybburl/images/toplinks/memberlist.gif',2)");
+			  VALUES('3','Memberlist','Memberlist','\$mybburl/memberlist.php','\$mybburl/images/toplinks/memberlist.gif',3)");
 	
 	// Calender
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('3','Calendar','Calendar','\$mybburl/calendar.php','\$mybburl/images/toplinks/calendar.gif',3)");
+			  VALUES('4','Calendar','Calendar','\$mybburl/calendar.php','\$mybburl/images/toplinks/calendar.gif',4)");
 	
 	// Help
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('4','Help','Help','\$mybburl/misc.php?action=help','\$mybburl/images/toplinks/help.gif',4)");
+			  VALUES('5','Help','Help','\$mybburl/misc.php?action=help','\$mybburl/images/toplinks/help.gif',5)");
 	
 	// create templates
-	custommenu_setup_templates();
+	//custommenu_setup_templates();
 }
 
 function custommenu_is_installed()
@@ -255,8 +254,8 @@ function custommenu_uninstall()
 	
 	// drop tables
 	$tables=array(
-		'custommenu',
-		'custommenu_sub'
+		'custommenu_sub',
+		'custommenu'
 	);
 	foreach($tables as $table)
 	{
