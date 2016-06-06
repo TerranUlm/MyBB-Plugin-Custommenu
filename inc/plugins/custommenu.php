@@ -42,7 +42,7 @@ function custommenu_info()
 		'website' => 'http://opt-community.de/',
 		'author' => 'Dieter Gobbers',
 		'authorsite' => 'http://opt-community.de/',
-		'version' => '2.1',
+		'version' => '2.1.0',
 		'guid' => '',
 		'compatibility' => '18*'
 	);
@@ -1138,7 +1138,7 @@ function custommenu_pre_output_page_10(&$contents)
 					$menuurl2 .= 
 								'</div>'.
 								'<script type="text/javascript">if(use_xmlhttprequest=="1")'.
-								'{new PopupMenu("menu_'.$menuitem['id_name'].'");}</script>';
+								'{$("#menu_'.$menuitem['id_name'].'").popupMenu();}</script>';
 				}
 			}
 			$menuurl1 = '<a href="' . $menuurl . '"' . ($menuitem['newwindow'] == 1 ? ' target="_blank" ' : '') . ' id="menu_'.$menuitem['id_name'].'" class="'.$menuclass.'">';
