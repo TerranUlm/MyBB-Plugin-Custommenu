@@ -135,7 +135,7 @@ function custommenu_install()
 	{
 		$create_table_custommenu = "CREATE TABLE IF NOT EXISTS `".TABLE_PREFIX."custommenu` (
 			`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-			`id_name` varchar(255) CHARACTER SET utf8 NOT NULL COMMENT 'identify the menu, for internal use only (javascript)',
+			`id_name` varchar(255) CHARACTER SET utf8 NOT NULL COMMENT 'identify the menu item for CSS',
 			`title` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT 'name of the menu entry, used for the forum header',
 			`link` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
 			`icon` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
@@ -181,27 +181,27 @@ function custommenu_install()
 	// Portal
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('1','Portal','Portal','\$mybburl/portal.php','',1)");
+			  VALUES('1','portal','Portal','\$mybburl/portal.php','',1)");
 	
 	// Search
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('2','Search','Search','\$mybburl/search.php','\$mybburl/images/toplinks/search.gif',2)");
+			  VALUES('2','search','Search','\$mybburl/search.php','',2)");
 	
 	// Memberlist
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('3','Memberlist','Memberlist','\$mybburl/memberlist.php','\$mybburl/images/toplinks/memberlist.gif',3)");
+			  VALUES('3','memberlist','Memberlist','\$mybburl/memberlist.php','',3)");
 	
 	// Calender
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('4','Calendar','Calendar','\$mybburl/calendar.php','\$mybburl/images/toplinks/calendar.gif',4)");
+			  VALUES('4','calendar','Calendar','\$mybburl/calendar.php','',4)");
 	
 	// Help
 	$db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "custommenu
 				(id,id_name,title,link,icon,id_order)
-			  VALUES('5','Help','Help','\$mybburl/misc.php?action=help','\$mybburl/images/toplinks/help.gif',5)");
+			  VALUES('5','help','Help','\$mybburl/misc.php?action=help','',5)");
 	
 	// create templates
 	//custommenu_setup_templates();
@@ -1088,7 +1088,7 @@ function custommenu_pre_output_page_10(&$contents)
 		if (!empty($menuurl))
 		{
 			$menuurl2 = '</a>';
-			$menuclass='menulink';
+			$menuclass=$menuitem['id_name'];
 			if (!empty($menuitem['submenus']))
 			{
 				// test if any of the submenus is visible for the logged in user
@@ -1330,11 +1330,11 @@ function custommenu_setup_stylessheet()
 	global $PL;
 	
 	$styles=array(
-		'a.menu_submenu' => array(
+		'#header ul.menu li a.menu_submenu' => array(
 			'background' => 'transparent url(images/optc/arrow.png) no-repeat right center',
 			'padding-right' => '15px'
 		),
-		'a.menu_submenu:hover' => array(
+		'#header ul.menu li a.menu_submenu:hover' => array(
 			'background' => 'transparent url(images/optc/arrow_hv.png) no-repeat right center'
 		),
 		'.submenu_popup' => array(
@@ -1364,6 +1364,9 @@ function custommenu_setup_stylessheet()
 		),
 		'.submenu_popup .submenu_item:hover' => array(
 			'border-color' => 'rgba(250,234,185,1)'
+		),
+		'#header ul.menu li a' => array(
+			'// background-image' => 'none'
 		)
 	);
 	$PL->stylesheet(
