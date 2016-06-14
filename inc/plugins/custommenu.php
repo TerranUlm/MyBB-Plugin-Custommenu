@@ -1,7 +1,7 @@
 <?php
 /*
 Custom Menu Plugin for MyBB
-Copyright (C) 2013 Dieter Gobbers
+Copyright (C) 2016 Dieter Gobbers
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ function custommenu_info()
 		'website' => 'http://opt-community.de/',
 		'author' => 'Dieter Gobbers',
 		'authorsite' => 'http://opt-community.de/',
-		'version' => '2.1.0',
+		'version' => '2.1.1',
 		'guid' => '',
 		'compatibility' => '18*'
 	);
@@ -110,6 +110,8 @@ function custommenu_deactivate()
 						{$menu_calendar}
 						<li><a href="{$mybb->settings[\'bburl\']}/misc.php?action=help" class="help">{$lang->toplinks_help}</a></li>', 0);
 	change_admin_permission('tools','custommenu', -1);
+	
+	$PL->stylesheet_delete('custommenu');
 }
 
 function custommenu_install()
@@ -204,7 +206,7 @@ function custommenu_install()
 			  VALUES('5','help','Help','\$mybburl/misc.php?action=help','',5)");
 	
 	// create templates
-	//custommenu_setup_templates();
+	custommenu_setup_templates();
 }
 
 function custommenu_is_installed()
@@ -1337,7 +1339,7 @@ function custommenu_setup_stylessheet()
 		'#header ul.menu li a.menu_submenu:hover' => array(
 			'background' => 'transparent url(images/optc/arrow_hv.png) no-repeat right center'
 		),
-		'.submenu_popup' => array(
+		'#header .submenu_popup' => array(
 			'background-color' => 'black',
 			'text-align' => 'left',
 			'border-width' => '1px',
@@ -1345,28 +1347,31 @@ function custommenu_setup_stylessheet()
 			'border-color' => 'rgb(124, 124, 124)',
 			'font-size' => 'smaller'
 		),
-		'.submenu_popup .submenu_item' => array(
+		'#header .submenu_popup .submenu_item' => array(
 			'border-width' => '1px',
 			'border-style' => 'solid',
 			'border-color' => 'white',
-			'padding-left' => '5px',
-			'padding-right' => '5px'
-		),
-		'.submenu_popup a.submenu_link:link' => array(
-			'color' => 'white'
-		),
-		'.submenu_popup a.submenu_link:visited' => array(
-			'color' => 'white'
-		),
-		'.submenu_popup a.submenu_link:hover, .submenu_popup a.submenu_link:active' => array(
-			'color' => 'rgba(250,234,185,1)',
-			'text-decoration' => 'none'
-		),
-		'.submenu_popup .submenu_item:hover' => array(
-			'border-color' => 'rgba(250,234,185,1)'
+			'padding' => '5px'
 		),
 		'#header ul.menu li a' => array(
-			'// background-image' => 'none'
+			'padding-left' => 'initial',
+			'background-image' => 'none',
+			'background-repeat' => 'initial'
+		),
+		'#logo ul.top_links a.search' => array(
+			'background-position' => 'initial'
+		),
+		'#logo ul.top_links a.memberlist' => array(
+			'background-position' => 'initial'
+		),
+		'#logo ul.top_links a.calendar' => array(
+			'background-position' => 'initial'
+		),
+		'#logo ul.top_links a.help' => array(
+			'background-position' => 'initial'
+		),
+		'#logo ul.top_links a.portal' => array(
+			'background-position' => 'initial'
 		)
 	);
 	$PL->stylesheet(
