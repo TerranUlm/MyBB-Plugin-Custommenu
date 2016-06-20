@@ -80,6 +80,8 @@ function custommenu_activate()
 	find_replace_templatesets("header", $regex, '${1}<custom_menu>${2}');
 	
 	change_admin_permission('tools','custommenu');
+	
+	custommenu_cache_menu();
 }
 
 function custommenu_deactivate()
