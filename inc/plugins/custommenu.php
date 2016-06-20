@@ -207,8 +207,6 @@ function custommenu_install()
 				(id,id_name,title,link,icon,id_order)
 			  VALUES('5','help','Help','\$mybburl/misc.php?action=help','',5)");
 	
-	// create templates
-	custommenu_setup_templates();
 }
 
 function custommenu_is_installed()
