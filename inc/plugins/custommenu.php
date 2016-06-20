@@ -42,7 +42,7 @@ function custommenu_info()
 		'website' => 'http://opt-community.de/',
 		'author' => 'Dieter Gobbers',
 		'authorsite' => 'http://opt-community.de/',
-		'version' => '2.1.1',
+		'version' => '2.1.2',
 		'guid' => '',
 		'compatibility' => '18*'
 	);
